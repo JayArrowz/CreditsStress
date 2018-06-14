@@ -55,6 +55,7 @@ public class Main {
 		File keyFile = new File("./keys");
 		if (!keyFile.exists()) {
 			System.out.println("Missing 'keys' file");
+			System.console().readLine();
 			return;
 		}
 		Path keyPath = Paths.get(keyFile.toURI());
@@ -94,17 +95,23 @@ public class Main {
 		while (AppState.apiClient == null)
 			;
 		AppState.newAccount = false;
+		open(PUBLIC_KEY, PRIVATE_KEY);
+		BigDecimal balance = AppState.apiClient.getBalance(AppState.account, "cs");
+		if(balance.doubleValue() < 1000) {
+			System.out.println("You need atleast 1000 credits to run this test.");
+			System.console().readLine();
+			return;
+		}
+		
 		System.out.println("Generating 10 source wallets (senders)");
 		for (int i = 0; i < 10; i++) {
 			SOURCE_WALLETS.add(makeAccount());
 		}
 		System.out.println("Generated source wallets attempting to send 100 CS to each.");
-		System.out.println("Please ensure that your keys (main account with atleast 1000 CS) file has enough balance.");
 		Thread.sleep(3000);
 
 		for (int i = 0; i < SOURCE_WALLETS.size(); i++) {
-			open(PUBLIC_KEY, PRIVATE_KEY);
-			final BigDecimal balance = AppState.apiClient.getBalance(AppState.account, "cs");
+			balance = AppState.apiClient.getBalance(AppState.account, "cs");
 			System.out.println("Wallet Balance: " + balance);
 			final BigDecimal toSend = new BigDecimal("100");
 			ApiUtils.callTransactionFlow(ApiUtils.generateTransactionInnerId(), PUBLIC_KEY, SOURCE_WALLETS.get(i)[0],
