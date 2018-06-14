@@ -15,6 +15,7 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import org.json.JSONObject;
 
@@ -53,9 +54,10 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		File keyFile = new File("./keys");
+		Scanner scanIn = new Scanner(System.in);
 		if (!keyFile.exists()) {
 			System.out.println("Missing 'keys' file");
-			System.console().readLine();
+			scanIn.nextLine();
 			return;
 		}
 		Path keyPath = Paths.get(keyFile.toURI());
@@ -82,7 +84,7 @@ public class Main {
 		while (invalid) {
 			System.out.print("Enter no of tx's to send: ");
 			try {
-				long tx = Long.parseLong(System.console().readLine());
+				long tx = Long.parseLong(scanIn.nextLine());
 				NUMBER_OF_TXS_TO_SEND = tx;
 			} catch (Exception e) {
 				System.out.println("Invalid integer try again");
@@ -99,7 +101,7 @@ public class Main {
 		BigDecimal balance = AppState.apiClient.getBalance(AppState.account, "cs");
 		if(balance.doubleValue() < 1000) {
 			System.out.println("You need atleast 1000 credits to run this test.");
-			System.console().readLine();
+			scanIn.nextLine();
 			return;
 		}
 		
