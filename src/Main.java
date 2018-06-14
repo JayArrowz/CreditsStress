@@ -134,9 +134,6 @@ public class Main {
 			});
 			transactionThread.start();
 		}
-		
-		System.out.println("Finished sending TX's");
-		System.console().readLine();
 	}
 
 	public static String[] makeAccount() {
