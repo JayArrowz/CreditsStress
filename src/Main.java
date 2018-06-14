@@ -189,7 +189,6 @@ public class Main {
 		}
 		if (validateKeys(pubKey, privKey)) {
 			System.out.println("Valid key. Login successful");
-			// App.showForm("/fxml/form6.fxml", "Wallet");
 		} else {
 			System.out.println("Key pair invalid");
 		}
