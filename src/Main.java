@@ -64,7 +64,7 @@ public class Main {
 		for (String s : lineList)
 			lines += s;
 
-		JSONObject keyObject = new JSONObject(lines).getJSONObject("keys");
+		JSONObject keyObject = new JSONObject(lines).getJSONObject("key");
 		PUBLIC_KEY = keyObject.getString("public");
 		PRIVATE_KEY = keyObject.getString("private");
 		System.out.println("Set PRIVATE_KEY=" + PRIVATE_KEY);
