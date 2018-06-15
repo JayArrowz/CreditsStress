@@ -96,7 +96,14 @@ public class Main {
 
 		while (AppState.apiClient == null)
 			;
+		AppState.newAccount = true;
+		System.out.println("Generating 10 source wallets (senders)");
+		for (int i = 0; i < 10; i++) {
+			SOURCE_WALLETS.add(makeAccount());
+		}
+		System.out.println("Generated source wallets attempting to send 100 CS to each.");
 		AppState.newAccount = false;
+		
 		open(PUBLIC_KEY, PRIVATE_KEY);
 		BigDecimal balance = AppState.apiClient.getBalance(AppState.account, "cs");
 		if(balance.doubleValue() < 1000) {
@@ -104,12 +111,6 @@ public class Main {
 			scanIn.nextLine();
 			return;
 		}
-		
-		System.out.println("Generating 10 source wallets (senders)");
-		for (int i = 0; i < 10; i++) {
-			SOURCE_WALLETS.add(makeAccount());
-		}
-		System.out.println("Generated source wallets attempting to send 100 CS to each.");
 		Thread.sleep(3000);
 
 		for (int i = 0; i < SOURCE_WALLETS.size(); i++) {
