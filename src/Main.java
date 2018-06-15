@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONObject;
 
@@ -25,8 +26,8 @@ public class Main {
 
 	public static String PUBLIC_KEY = "";
 	public static String PRIVATE_KEY = "";
-	public static HashMap<String, PrivateKey> PRIVATE_KEYS = new HashMap<String, PrivateKey>();
 	public static ArrayList<String[]> SOURCE_WALLETS = new ArrayList<String[]>();
+	public static ArrayList<PrivateKey> SOURCE_WALLET_PRIVATE_KEY = new ArrayList<PrivateKey>();
 	public static int AMOUNT_OF_THREADS = 10;
 	public static long NUMBER_OF_TXS_TO_SEND = 10000;
 
@@ -97,8 +98,8 @@ public class Main {
 		while (AppState.apiClient == null)
 			;
 		AppState.newAccount = true;
-		System.out.println("Generating 10 source wallets (senders)");
-		for (int i = 0; i < 10; i++) {
+		System.out.println("Generating 3 source wallets (senders) (THIS MIGHT TAKE SOME TIME DONT WORRY ABOUT TIMEOUT)");
+		for (int i = 0; i < 3; i++) {
 			SOURCE_WALLETS.add(makeAccount());
 		}
 		System.out.println("Generated source wallets attempting to send 100 CS to each.");
@@ -147,10 +148,10 @@ public class Main {
 		String privateStr = Converter.encodeToBASE58(Ed25519.privateKeyToBytes(privateKey));
 		try {
 			ApiUtils.execSystemTransaction(publicStr);
-			PRIVATE_KEYS.put(publicStr, privateKey);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
+		SOURCE_WALLET_PRIVATE_KEY.add(privateKey);
 		return new String[] { publicStr, privateStr };
 	}
 
@@ -161,9 +162,9 @@ public class Main {
 			String to = WALLETS_TO_SEND[random];
 			String[] from = SOURCE_WALLETS.get(randomSource);
 			final BigDecimal balance = AppState.apiClient.getBalance(from[0], "cs");
-			System.out.println("Wallet " + from + " Balance: " + balance);
-			final BigDecimal toSend = new BigDecimal("0.0001");
-			callTransactionFlow(ApiUtils.generateTransactionInnerId(), from[0], to, PRIVATE_KEYS.get(to), toSend, balance, "cs");
+			System.out.println("Wallet FROM: " + from[0] + " Balance: " + balance+" PrivKey: "+SOURCE_WALLET_PRIVATE_KEY.get(randomSource));
+			final BigDecimal toSend = new BigDecimal("1");
+			callTransactionFlow(ApiUtils.generateTransactionInnerId(), from[0], to, SOURCE_WALLET_PRIVATE_KEY.get(randomSource), toSend, balance, "cs");
 		}
 	}
 
